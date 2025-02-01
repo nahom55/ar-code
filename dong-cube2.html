@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Markerless AR with A-Frame and AR.js</title>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  </head>
+  <body style="margin: 0; overflow: hidden;">
+    <!-- A-Frame Scene with AR.js -->
+    <a-scene
+      embedded
+      arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;"
+      renderer="logarithmicDepthBuffer: true;"
+      vr-mode-ui="enabled: false"
+    >
+      <!-- Add a 3D Human Model -->
+      <a-entity
+        gltf-model="url(scene.gltf)"
+        scale="0.0022 0.0022 0.0022"
+        position="0 -0.4 -2"
+        animation="property: rotation; to: 0 360 0; loop: false; dur: 10000;"
+      ></a-entity>
+
+      <!-- AR Buttons -->
+      <a-entity id="serviceButtons" visible="false">
+        <!-- Service 1 Button -->
+        <a-entity id="service1" class="service-button" position="0.4 0.4 -2" scale="0.3 0.3 0.3">
+          <!-- Button box -->
+          <a-box geometry="primitive: box; width: 0.5; height: 0.2; depth: 0.1" material="color: #FF5733"></a-box>
+          <!-- Button text, offset along Z so it appears on top -->
+          <a-entity
+            text="value: Service 1; align: center; color: white; width: 5"
+            position="0 0 0.06"
+            material="depthTest: false"
+          ></a-entity>
+        </a-entity>
+
+        <!-- Service 2 Button -->
+        <a-entity id="service2" class="service-button" position="0.4 0.3 -2" scale="0.3 0.3 0.3">
+          <!-- Button box -->
+          <a-box geometry="primitive: box; width: 0.5; height: 0.2; depth: 0.1" material="color: #33FF57"></a-box>
+          <!-- Button text, offset along Z so it appears on top -->
+          <a-entity
+            text="value: Service 2; align: center; color: white; width: 5"
+            position="0 0 0.06"
+            material="depthTest: false"
+          ></a-entity>
+        </a-entity>
+
+        <!-- Service 3 Button -->
+        <a-entity id="service3" class="service-button" position="0.4 0.2 -2" scale="0.3 0.3 0.3">
+          <!-- Button box -->
+          <a-box geometry="primitive: box; width: 0.5; height: 0.2; depth: 0.1" material="color: #3357FF"></a-box>
+          <!-- Button text, offset along Z so it appears on top -->
+          <a-entity
+            text="value: Service 3; align: center; color: white; width: 5"
+            position="0 0 0.06"
+            material="depthTest: false"
+          ></a-entity>
+        </a-entity>
+      </a-entity>
+
+      <!-- Camera with cursor for interactions -->
+      <a-entity camera look-controls>
+        <a-cursor fuse="true" fuse-timeout="500"></a-cursor>
+      </a-entity>
+    </a-scene>
+
+    <!-- Instructions -->
+    <div
+      style="
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 10px;
+        border-radius: 5px;
+      "
+    >
+      <p>Point your camera at a flat surface to place the 3D model.</p>
+    </div>
+
+    <script>
+      // Function to speak text
+      function speak(text) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = "en-US"; // Set language
+        utterance.volume = 1; // Volume (0 to 1)
+        utterance.rate = 1; // Speed (0.1 to 10)
+        utterance.pitch = 1; // Pitch (0 to 2)
+        window.speechSynthesis.speak(utterance);
+      }
+
+      // Show AR buttons after 5 seconds
+      setTimeout(() => {
+        document.getElementById("serviceButtons").setAttribute("visible", true);
+      }, 5000); // 5000 milliseconds = 5 seconds
+
+      // Attach click event listeners to the AR buttons.
+      document.addEventListener("DOMContentLoaded", function () {
+        // Play introductory speech
+        speak("Selam! Welcome to Safricom AR customer support service. What brings you here today?");
+
+        // Redirect Service 1 button to 'wif-ove.html' and speak
+        document.getElementById("service1").addEventListener("click", function () {
+          speak("Redirecting to Service 1");
+          setTimeout(() => {
+            window.location.href = "dong-cube.html";
+          }, 2000); // Wait for speech to finish before redirecting
+        });
+
+        // Speak for Service 2 button
+        document.getElementById("service2").addEventListener("click", function () {
+          speak("Service 2 Activated!");
+        });
+
+        // Speak for Service 3 button
+        document.getElementById("service3").addEventListener("click", function () {
+          speak("Service 3 Activated!");
+        });
+      });
+    </script>
+  </body>
+</html>
