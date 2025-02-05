@@ -7,54 +7,8 @@
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/n5ro/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
-    <style>
-      body {
-        margin: 0;
-        overflow: hidden;
-        font-family: Arial, sans-serif;
-      }
-
-      /* Instructions styling */
-      #instructions {
-        position: absolute;
-        top: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        color: white;
-        text-align: center;
-        background: rgba(0, 0, 0, 0.7);
-        padding: 10px;
-        border-radius: 5px;
-        z-index: 1000;
-      }
-
-      /* Responsive adjustments */
-      @media (max-width: 768px) {
-        #instructions {
-          font-size: 14px;
-          padding: 8px;
-        }
-
-        /* Adjust button scaling for smaller screens */
-        .service-button {
-          scale: 0.2 0.2 0.2 !important;
-        }
-      }
-
-      @media (max-width: 480px) {
-        #instructions {
-          font-size: 12px;
-          padding: 6px;
-        }
-
-        /* Further adjust button scaling for very small screens */
-        .service-button {
-          scale: 0.15 0.15 0.15 !important;
-        }
-      }
-    </style>
   </head>
-  <body>
+  <body style="margin: 0; overflow: hidden;">
     <!-- A-Frame Scene with AR.js -->
     <a-scene
       embedded
@@ -68,7 +22,7 @@
         scale="0.0025 0.0025 0.0025"
         position="0 -0.4 -2"
         animation-mixer
-      ></a-entity>
+         ></a-entity>
 
       <!-- AR Buttons -->
       <a-entity id="serviceButtons" visible="false">
@@ -116,7 +70,20 @@
     </a-scene>
 
     <!-- Instructions -->
-    <div id="instructions">
+    <div
+      style="
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 10px;
+        border-radius: 5px;
+      "
+    >
       <p>Point your camera at a flat surface to place the 3D model.</p>
     </div>
 
