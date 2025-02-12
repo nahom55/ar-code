@@ -18,50 +18,17 @@
     >
       <!-- Add a 3D Human Model -->
       <a-entity
-        gltf-model="url(test-anm.glb)"
-        scale="0.0025 0.0025 0.0025"
+        gltf-model="url(aaa22.glb)"
+        scale="0.015 0.015 0.015"
         position="0 -0.4 -2"
-        animation-mixer
-         ></a-entity>
+        
+        animation-mixer="clip: *; loop: false"
+      ></a-entity>
 
       <!-- AR Buttons -->
-      <a-entity id="serviceButtons" visible="false">
-        <!-- Service 1 Button -->
-        <a-entity id="service1" class="service-button" position="0.4 0.4 -2" scale="0.3 0.3 0.3">
-          <!-- Button box -->
-          <a-box geometry="primitive: box; width: 0.5; height: 0.2; depth: 0.1" material="color: #FF5733"></a-box>
-          <!-- Button text, offset along Z so it appears on top -->
-          <a-entity
-            text="value: Service 1; align: center; color: white; width: 5"
-            position="0 0 0.06"
-            material="depthTest: false"
-          ></a-entity>
-        </a-entity>
-
-        <!-- Service 2 Button -->
-        <a-entity id="service2" class="service-button" position="0.4 0.3 -2" scale="0.3 0.3 0.3">
-          <!-- Button box -->
-          <a-box geometry="primitive: box; width: 0.5; height: 0.2; depth: 0.1" material="color: #33FF57"></a-box>
-          <!-- Button text, offset along Z so it appears on top -->
-          <a-entity
-            text="value: Service 2; align: center; color: white; width: 5"
-            position="0 0 0.06"
-            material="depthTest: false"
-          ></a-entity>
-        </a-entity>
-
-        <!-- Service 3 Button -->
-        <a-entity id="service3" class="service-button" position="0.4 0.2 -2" scale="0.3 0.3 0.3">
-          <!-- Button box -->
-          <a-box geometry="primitive: box; width: 0.5; height: 0.2; depth: 0.1" material="color: #3357FF"></a-box>
-          <!-- Button text, offset along Z so it appears on top -->
-          <a-entity
-            text="value: Service 3; align: center; color: white; width: 5"
-            position="0 0 0.06"
-            material="depthTest: false"
-          ></a-entity>
-        </a-entity>
-      </a-entity>
+      
+      <!-- Audio Element -->
+      <a-entity id="audioElement" sound="src: url(cl.mp3); autoplay: false;"></a-entity>
 
       <!-- Camera with cursor for interactions -->
       <a-entity camera look-controls>
@@ -88,14 +55,10 @@
     </div>
 
     <script>
-      // Function to speak text
-      function speak(text) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = "en-US"; // Set language
-        utterance.volume = 1; // Volume (0 to 1)
-        utterance.rate = 1; // Speed (0.1 to 10)
-        utterance.pitch = 1; // Pitch (0 to 2)
-        window.speechSynthesis.speak(utterance);
+      // Function to play audio
+      function playAudio() {
+        const audioElement = document.getElementById("audioElement");
+        audioElement.components.sound.playSound();
       }
 
       // Show AR buttons after 5 seconds
@@ -105,25 +68,25 @@
 
       // Attach click event listeners to the AR buttons.
       document.addEventListener("DOMContentLoaded", function () {
-        // Play introductory speech
-        speak("Selam! Welcome to Safricom AR customer support service. What brings you here today?");
+        // Play introductory audio
+        playAudio();
 
-        // Redirect Service 1 button to 'wif-ove.html' and speak
+        // Redirect Service 1 button to 'wif-ove.html' and play audio
         document.getElementById("service1").addEventListener("click", function () {
-          speak("Redirecting to Service 1");
+          playAudio();
           setTimeout(() => {
             window.location.href = "dong-cube.html";
-          }, 2000); // Wait for speech to finish before redirecting
+          }, 2000); // Wait for audio to finish before redirecting
         });
 
-        // Speak for Service 2 button
+        // Play audio for Service 2 button
         document.getElementById("service2").addEventListener("click", function () {
-          speak("Service 2 Activated!");
+          playAudio();
         });
 
-        // Speak for Service 3 button
+        // Play audio for Service 3 button
         document.getElementById("service3").addEventListener("click", function () {
-          speak("Service 3 Activated!");
+          playAudio();
         });
       });
     </script>
