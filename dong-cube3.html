@@ -97,10 +97,12 @@
     >
       <!-- Add a 3D Human Model -->
       <a-entity
+        id="human-model"
         gltf-model="url(aaa22.glb)"
         scale="0.015 0.015 0.015"
         position="0 -0.4 -2"
-        animation-mixer="clip: *; loop: once"
+        animation-mixer="clip: *; timeScale: 0; loop: once" <!-- Pause animation initially -->
+        visible="false" <!-- Initially hidden -->
       ></a-entity>
 
       <!-- AR Buttons -->
@@ -136,10 +138,15 @@
         audioElement.components.sound.playSound();
       }
 
-      // Play audio when the screen loads
-      document.addEventListener("DOMContentLoaded", function () {
-        playAudio();
-      });
+      // Show the 3D model, start animation, and play audio after 10 seconds
+      setTimeout(() => {
+        const humanModel = document.getElementById("human-model");
+        const audioElement = document.getElementById("audioElement");
+
+        humanModel.setAttribute("visible", true); // Show the model
+        humanModel.setAttribute("animation-mixer", "timeScale: 1"); // Start the animation
+        playAudio(); // Play the audio
+      }, 5000); // 10000 milliseconds = 10 seconds
 
       // Show AR buttons after 5 seconds
       setTimeout(() => {
