@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Wi-Fi Router Setup Guide</title>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <style>
+      /* CSS for step counter and buttons */
+      .step-counter {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: green;
+        font-size: 24px;
+        font-family: Arial, sans-serif;
+        z-index: 1000;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 10px;
+        border-radius: 5px;
+        width: 90%;
+        max-width: 300px;
+        box-sizing: border-box;
+      }
+
+      .nav-buttons {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        width: 90%;
+        max-width: 400px;
+      }
+
+      .nav-buttons button {
+        font-size: 18px;
+        padding: 10px 20px;
+        cursor: pointer;
+        background-color: green;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        flex: 1;
+        text-align: center;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 600px) {
+        .step-counter {
+          font-size: 20px;
+          padding: 8px;
+        }
+
+        .nav-buttons button {
+          font-size: 16px;
+          padding: 8px 16px;
+        }
+      }
+
+      @media (max-width: 400px) {
+        .step-counter {
+          font-size: 18px;
+          padding: 6px;
+        }
+
+        .nav-buttons button {
+          font-size: 14px;
+          padding: 6px 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- AR.js Scene -->
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+      <!-- 3D Model of the Wi-Fi Router -->
+      <a-entity
+        id="router-model"
+        gltf-model="url(base-wifi-dwr.glb)"
+        scale="2 2 2"
+        position="0 -0.1 -1"
+        rotation="0 0 0"
+        visible="true"
+      ></a-entity>
+
+      <!-- Annotations -->
+      <a-entity id="annotation-container">
+        <!-- Annotation for SIM Card Slot -->
+        <a-entity
+          id="sim-card-annotation"
+          visible="true"
+          line="start: 0 0 0; end: 0.06 0 0; color: red"
+          position="0.025 0.02 -0.5"
+        >
+          <a-text
+            value="Insert SIM card"
+            position="0.09 0 0"
+            color="white"
+            scale="0.03 0.03 0.03"
+            align="center"
+          ></a-text>
+        </a-entity>
+
+        <!-- Annotation for Wi-Fi Name -->
+        <a-entity
+          id="wifi-name-annotation"
+          visible="false"
+          line="start: 0 0 0; end: 0.06 0 0; color: blue"
+          position="-0.085 0.01 -0.5"
+        >
+          <a-text
+            value="Wi-Fi Name"
+            position="-0.025 0 0"
+            color="white"
+            scale="0.03 0.03 0.03"
+            align="center"
+          ></a-text>
+        </a-entity>
+
+        <!-- Annotation for Wi-Fi Password -->
+        <a-entity
+          id="wifi-password-annotation"
+          visible="false"
+          line="start: 0 0 0; end: 0.06 0 0; color: yellow"
+          position="-0.085 0 -0.5"
+        >
+          <a-text
+            value="Wi-Fi Password"
+            position="-0.025 0 0"
+            color="white"
+            scale="0.03 0.03 0.03"
+            align="center"
+          ></a-text>
+        </a-entity>
+
+        <!-- Annotation for Wi-Fi IP Address -->
+        <a-entity
+          id="wifi-ip-annotation"
+          visible="false"
+          line="start: 0 0 0; end: 0.06 0 0; color: orange"
+          position="-0.085 -0.01 -0.5"
+        >
+          <a-text
+            value="Wi-Fi IP Address"
+            position="-0.025 0 0"
+            color="white"
+            scale="0.03 0.03 0.03"
+            align="center"
+          ></a-text>
+        </a-entity>
+
+        <!-- Annotation for Power Button -->
+        <a-entity
+          id="power-button-annotation"
+          visible="false"
+          line="start: 0 0 0; end: 0.06 0 0; color: orange"
+          position="0.025 0.02 -0.5"
+        >
+          <a-text
+            value="Press Power Button"
+            position="0.09 0 0"
+            color="white"
+            scale="0.03 0.03 0.03"
+            align="center"
+          ></a-text>
+        </a-entity>
+      </a-entity>
+
+      <!-- AR.js Camera -->
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <!-- Step Counter -->
+    <div class="step-counter" id="step-counter">Step 1 / 3</div>
+
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons">
+      <button id="prev-button" onclick="prevStep()">Previous</button>
+      <button id="next-button" onclick="nextStep()">Next</button>
+    </div>
+
+    <script>
+      // Step Management
+      let currentStep = 1;
+      const totalSteps = 3;
+
+      // Update Step Counter
+      const stepCounter = document.getElementById("step-counter");
+
+      // Annotations
+      const simCardAnnotation = document.getElementById("sim-card-annotation");
+      const wifiNameAnnotation = document.getElementById("wifi-name-annotation");
+      const wifiPasswordAnnotation = document.getElementById("wifi-password-annotation");
+      const wifiIpAnnotation = document.getElementById("wifi-ip-annotation");
+      const powerButtonAnnotation = document.getElementById("power-button-annotation");
+
+      // Function to update annotations based on the current step
+      function updateAnnotations() {
+        switch (currentStep) {
+          case 1:
+            simCardAnnotation.setAttribute("visible", true);
+            wifiNameAnnotation.setAttribute("visible", false);
+            wifiPasswordAnnotation.setAttribute("visible", false);
+            wifiIpAnnotation.setAttribute("visible", false);
+            powerButtonAnnotation.setAttribute("visible", false);
+            break;
+          case 2:
+            simCardAnnotation.setAttribute("visible", false);
+            wifiNameAnnotation.setAttribute("visible", true);
+            wifiPasswordAnnotation.setAttribute("visible", true);
+            wifiIpAnnotation.setAttribute("visible", true);
+            powerButtonAnnotation.setAttribute("visible", false);
+            break;
+          case 3:
+            simCardAnnotation.setAttribute("visible", false);
+            wifiNameAnnotation.setAttribute("visible", false);
+            wifiPasswordAnnotation.setAttribute("visible", false);
+            wifiIpAnnotation.setAttribute("visible", false);
+            powerButtonAnnotation.setAttribute("visible", true);
+            break;
+        }
+      }
+
+      // Function to update the step counter
+      function updateStepCounter() {
+        stepCounter.textContent = `Step ${currentStep} / ${totalSteps}`;
+      }
+
+      // Function to go to the next step
+      function nextStep() {
+        if (currentStep < totalSteps) {
+          currentStep++;
+          updateStepCounter();
+          updateAnnotations();
+
+          // Rotate the 3D model 180 degrees on the X-axis when transitioning from Step 2 to Step 3
+          if (currentStep === 3) {
+            const routerModel = document.getElementById("router-model");
+            routerModel.setAttribute("animation", {
+              property: "rotation",
+              to: "0 180 0",
+              dur: 1000, // Duration of the rotation in milliseconds
+              easing: "linear",
+            });
+          }
+        }
+      }
+
+      // Function to go to the previous step
+      function prevStep() {
+        if (currentStep > 1) {
+          currentStep--;
+          updateStepCounter();
+          updateAnnotations();
+
+          // Rotate the 3D model back to 0 degrees on the X-axis when transitioning from Step 3 to Step 2
+          if (currentStep === 2) {
+            const routerModel = document.getElementById("router-model");
+            routerModel.setAttribute("animation", {
+              property: "rotation",
+              to: "0 0 0",
+              dur: 1000, // Duration of the rotation in milliseconds
+              easing: "linear",
+            });
+          }
+        }
+      }
+
+      // Initialize the first step
+      updateStepCounter();
+      updateAnnotations();
+    </script>
+  </body>
+</html>
