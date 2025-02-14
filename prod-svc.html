@@ -15,13 +15,13 @@
             transform: translateX(-50%);
             z-index: 1000;
             display: flex;
-            gap: 5x;
+            gap: 5px;
             align-items: center;
             flex-wrap: wrap;
             justify-content: center;
         }
         .button-container button {
-            padding: 10px 20px;
+            padding: 10px 10px;
             font-size: 16px;
             background-color: green;
             color: white;
@@ -55,7 +55,7 @@
         #description-list {
             position: absolute;
             top: 50%;
-            left: 50%;
+            left: 70%;
             transform: translate(-50%, -50%);
             z-index: 1000;
             background: rgba(255, 255, 255, 0.8);
@@ -63,7 +63,7 @@
             border-radius: 10px;
             display: none; /* Hide initially */
             text-align: center;
-            width: 90%;
+            width: 40%;
             max-width: 300px;
             box-sizing: border-box;
         }
@@ -81,7 +81,7 @@
         @media (max-width: 600px) {
             .button-container button {
                 font-size: 14px;
-                padding: 8px 16px;
+                padding: 8px 10px;
             }
 
             .nav-button {
@@ -102,7 +102,7 @@
         @media (max-width: 400px) {
             .button-container button {
                 font-size: 12px;
-                padding: 6px 12px;
+                padding: 6px 10px;
             }
 
             .nav-button {
@@ -123,9 +123,9 @@
 </head>
 <body style="margin: 0; overflow: hidden;">
     <!-- AR Scene -->
-    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;" vr-mode-ui="enabled: false">
         <!-- Dynamic 3D Model Container -->
-        <a-entity id="model-container" scale="0.003 0.003 0.003" position="0 -0.02 -1">
+        <a-entity id="model-container" scale="0.003 0.003 0.003" position="-0.1 -0.02 -1">
             <!-- Rotatable 3D Model -->
             <a-entity id="rotatable-model" rotation="0 180 0">
                 <!-- 3D model will be inserted here -->
@@ -147,13 +147,13 @@
     <div class="button-container" id="category-buttons">
         <button onclick="showModelButtons('samsung')">Samsung</button>
         <button onclick="showModelButtons('itel')">Itel</button>
-        <button onclick="showModelButtons('tecno')">Tecno</button>
+        <button onclick="showModelButtons('tecno')">Kimem</button>
     </div>
 
     <!-- Model Buttons with Navigation (Hidden Initially) -->
     <div class="button-container model-buttons" id="samsung-buttons">
         <button class="nav-button" onclick="goBack()">&lt;</button>
-        <button onclick="loadModel('sam', ['6.2-inch Display', '128GB Storage', '8GB RAM', 'Exynos 2100'])">Samsung S21</button>
+        <button onclick="loadModel('sam', ['Only @Price Br.25000  ', 'RAM 6 GB', 'Storage 128 GB', 'Font camera 12 MP', 'Back camera 5 MP', 'Battery 5100 mah', 'Screen 6.5\'', 'Produced @ Samsung'])">Samsung S21</button>
         <button onclick="loadModel('samsung-a52', ['6.5-inch Display', '128GB Storage', '6GB RAM', 'Snapdragon 720G'])">Samsung A52</button>
         <button class="nav-button" onclick="goNext()">&gt;</button>
     </div>
@@ -244,9 +244,9 @@
         }
 
         // Function to go to the next model (placeholder for now)
-        function goNext() {
-            alert("Next button clicked! Add functionality here.");
-        }
+       // function goNext() {
+       //     alert("Next");
+       // }
     </script>
 </body>
 </html>

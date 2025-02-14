@@ -7,7 +7,7 @@
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     <style>
-      /* CSS for step counter and buttons */
+      /* CSS for step counter, description, and buttons */
       .step-counter {
         position: fixed;
         top: 20px;
@@ -15,6 +15,24 @@
         transform: translateX(-50%);
         color: green;
         font-size: 24px;
+        font-family: Arial, sans-serif;
+        z-index: 1000;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 10px;
+        border-radius: 5px;
+        width: 90%;
+        max-width: 300px;
+        box-sizing: border-box;
+      }
+
+      .step-description {
+        position: fixed;
+        top: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-size: 18px;
         font-family: Arial, sans-serif;
         z-index: 1000;
         text-align: center;
@@ -58,6 +76,11 @@
           padding: 8px;
         }
 
+        .step-description {
+          font-size: 16px;
+          padding: 8px;
+        }
+
         .nav-buttons button {
           font-size: 16px;
           padding: 8px 16px;
@@ -70,6 +93,11 @@
           padding: 6px;
         }
 
+        .step-description {
+          font-size: 14px;
+          padding: 6px;
+        }
+
         .nav-buttons button {
           font-size: 14px;
           padding: 6px 12px;
@@ -79,14 +107,14 @@
   </head>
   <body>
     <!-- AR.js Scene -->
-    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;" vr-mode-ui="enabled: false">
       <!-- 3D Model of the Wi-Fi Router -->
       <a-entity
         id="router-model"
         gltf-model="url(base-wifi-dwr.glb)"
-        scale="0.1 0.1 0.1"
+        scale="0.08 0.08 0.08"
         position="0 0 -0.5"
-        rotation="0 180 0"
+        rotation="0 0 0"
         visible="true"
       ></a-entity>
 
@@ -96,12 +124,12 @@
         <a-entity
           id="sim-card-annotation"
           visible="true"
-          line="start: 0 0 0; end: 0.06 0 0; color: red"
-          position="0.025 0.02 -0.5"
+          line="start: 0 0 0; end: 0.02 0 0; color: red"
+          position="0.001 0.02 -0.5"
         >
           <a-text
             value="Insert SIM card"
-            position="0.09 0 0"
+            position="0.05 0 0"
             color="white"
             scale="0.03 0.03 0.03"
             align="center"
@@ -112,8 +140,8 @@
         <a-entity
           id="wifi-name-annotation"
           visible="false"
-          line="start: 0 0 0; end: 0.06 0 0; color: blue"
-          position="-0.085 0.01 -0.5"
+          line="start: 0 0 0; end: 0.03 0 0; color: blue"
+          position="-0.03 0.01 -0.5"
         >
           <a-text
             value="Wi-Fi Name"
@@ -128,8 +156,8 @@
         <a-entity
           id="wifi-password-annotation"
           visible="false"
-          line="start: 0 0 0; end: 0.06 0 0; color: yellow"
-          position="-0.085 0 -0.5"
+          line="start: 0 0 0; end: 0.03 0 0; color: yellow"
+          position="-0.03 0 -0.5"
         >
           <a-text
             value="Wi-Fi Password"
@@ -144,8 +172,8 @@
         <a-entity
           id="wifi-ip-annotation"
           visible="false"
-          line="start: 0 0 0; end: 0.06 0 0; color: orange"
-          position="-0.085 -0.01 -0.5"
+          line="start: 0 0 0; end: 0.03 0 0; color: orange"
+          position="-0.03 -0.01 -0.5"
         >
           <a-text
             value="Wi-Fi IP Address"
@@ -160,12 +188,12 @@
         <a-entity
           id="power-button-annotation"
           visible="false"
-          line="start: 0 0 0; end: 0.06 0 0; color: orange"
-          position="0.025 0.02 -0.5"
+          line="start: 0 0 0; end: 0.015 0 0; color: orange"
+          position="0.0055 0.02 -0.5"
         >
           <a-text
             value="Press Power Button"
-            position="0.09 0 0"
+            position="0.045 0 0"
             color="white"
             scale="0.03 0.03 0.03"
             align="center"
@@ -178,7 +206,10 @@
     </a-scene>
 
     <!-- Step Counter -->
-    <div class="step-counter" id="step-counter">Step 1 / 3</div>
+    <div class="step-counter" id="step-counter">Step 1 / 5</div>
+
+    <!-- Step Description -->
+    <div class="step-description" id="step-description">Wait for the router to initialize.</div>
 
     <!-- Navigation Buttons -->
     <div class="nav-buttons">
@@ -189,10 +220,11 @@
     <script>
       // Step Management
       let currentStep = 1;
-      const totalSteps = 3;
+      const totalSteps = 5;
 
-      // Update Step Counter
+      // Update Step Counter and Description
       const stepCounter = document.getElementById("step-counter");
+      const stepDescription = document.getElementById("step-description");
 
       // Annotations
       const simCardAnnotation = document.getElementById("sim-card-annotation");
@@ -201,81 +233,138 @@
       const wifiIpAnnotation = document.getElementById("wifi-ip-annotation");
       const powerButtonAnnotation = document.getElementById("power-button-annotation");
 
-      // Function to update annotations based on the current step
+      // Function to update annotations and description based on the current step
       function updateAnnotations() {
         switch (currentStep) {
           case 1:
+            simCardAnnotation.setAttribute("visible", false);
+            wifiNameAnnotation.setAttribute("visible", false);
+            wifiPasswordAnnotation.setAttribute("visible", false);
+            wifiIpAnnotation.setAttribute("visible", false);
+            powerButtonAnnotation.setAttribute("visible", false);
+            stepDescription.textContent = "Router detected successfully, here are steps to setup your wifi";
+            break;
+          case 2:
             simCardAnnotation.setAttribute("visible", true);
             wifiNameAnnotation.setAttribute("visible", false);
             wifiPasswordAnnotation.setAttribute("visible", false);
             wifiIpAnnotation.setAttribute("visible", false);
             powerButtonAnnotation.setAttribute("visible", false);
+            stepDescription.textContent = "Insert the SIM card into the router.";
             break;
-          case 2:
+          case 3:
             simCardAnnotation.setAttribute("visible", false);
             wifiNameAnnotation.setAttribute("visible", true);
             wifiPasswordAnnotation.setAttribute("visible", true);
             wifiIpAnnotation.setAttribute("visible", true);
             powerButtonAnnotation.setAttribute("visible", false);
+            stepDescription.textContent = "Take a look at the Wi-Fi name, password, and IP address.";
             break;
-          case 3:
+          case 4:
             simCardAnnotation.setAttribute("visible", false);
             wifiNameAnnotation.setAttribute("visible", false);
             wifiPasswordAnnotation.setAttribute("visible", false);
             wifiIpAnnotation.setAttribute("visible", false);
             powerButtonAnnotation.setAttribute("visible", true);
+            stepDescription.textContent = "Press the power button to turn on the router.";
+            break;
+          case 5:
+            simCardAnnotation.setAttribute("visible", false);
+            wifiNameAnnotation.setAttribute("visible", false);
+            wifiPasswordAnnotation.setAttribute("visible", false);
+            wifiIpAnnotation.setAttribute("visible", false);
+            powerButtonAnnotation.setAttribute("visible", false);
+            stepDescription.textContent = "Finally to change password and access other settings you can browse the admin page using wifi's ip address";
             break;
         }
       }
 
       // Function to update the step counter
-      function updateStepCounter() {
-        stepCounter.textContent = `Step ${currentStep} / ${totalSteps}`;
-      }
+function updateStepCounter() {
+  stepCounter.textContent = "Step " + currentStep + " / " + totalSteps;
+}
 
-      // Function to go to the next step
-      function nextStep() {
-        if (currentStep < totalSteps) {
-          currentStep++;
-          updateStepCounter();
-          updateAnnotations();
+// Function to move and rotate the model
+function moveAndRotateModel(position, rotation) {
+  const routerModel = document.getElementById("router-model");
 
-          // Rotate the 3D model 180 degrees on the X-axis when transitioning from Step 2 to Step 3
-          if (currentStep === 3) {
-            const routerModel = document.getElementById("router-model");
-            routerModel.setAttribute("animation", {
-              property: "rotation",
-              to: "0 0 0",
-              dur: 1000, // Duration of the rotation in milliseconds
-              easing: "linear",
-            });
-          }
-        }
-      }
+  // Remove any existing animations
+  routerModel.removeAttribute("animation__position");
+  routerModel.removeAttribute("animation__rotation");
 
-      // Function to go to the previous step
-      function prevStep() {
-        if (currentStep > 1) {
-          currentStep--;
-          updateStepCounter();
-          updateAnnotations();
+  // Add new animations for position and rotation
+  if (position) {
+    routerModel.setAttribute("animation__position", {
+      property: "position",
+      to: position.x + " " + position.y + " " + position.z,
+      dur: 1000, // Duration of the movement in milliseconds
+      easing: "linear",
+    });
+  }
 
-          // Rotate the 3D model back to 0 degrees on the X-axis when transitioning from Step 3 to Step 2
-          if (currentStep === 2) {
-            const routerModel = document.getElementById("router-model");
-            routerModel.setAttribute("animation", {
-              property: "rotation",
-              to: "0 180 0",
-              dur: 1000, // Duration of the rotation in milliseconds
-              easing: "linear",
-            });
-          }
-        }
-      }
+  if (rotation) {
+    routerModel.setAttribute("animation__rotation", {
+      property: "rotation",
+      to: rotation.x + " " + rotation.y + " " + rotation.z,
+      dur: 1000, // Duration of the rotation in milliseconds
+      easing: "linear",
+    });
+  }
+}
 
-      // Initialize the first step
-      updateStepCounter();
-      updateAnnotations();
+// Function to go to the next step
+function nextStep() {
+  if (currentStep < totalSteps) {
+    currentStep++;
+    updateStepCounter();
+    updateAnnotations();
+
+    // Move and rotate the model based on the step transition
+    switch (currentStep) {
+      case 2:
+        moveAndRotateModel({ x: -0.04, y: 0, z: -0.5 }, { x: 0, y: 180, z: 0 }); // Move left and rotate 180 degrees
+        break;
+      case 3:
+        moveAndRotateModel({ x: 0.04, y: 0, z: -0.5 }, { x: 0, y: 180, z: 0 }); // Move right (keep rotation)
+        break;
+      case 4:
+        moveAndRotateModel({ x: -0.04, y: 0, z: -0.5 }, { x: 0, y: 0, z: 0 }); // Move left and reset rotation
+        break;
+      case 5:
+        moveAndRotateModel({ x: 0, y: 0, z: -0.5 }, { x: 0, y: 0, z: 0 }); // Move to center and reset rotation
+        break;
+    }
+  }
+}
+
+// Function to go to the previous step
+function prevStep() {
+  if (currentStep > 1) {
+    currentStep--;
+    updateStepCounter();
+    updateAnnotations();
+
+    // Move and rotate the model based on the step transition
+    switch (currentStep) {
+      case 1:
+        moveAndRotateModel({ x: 0, y: 0, z: -0.5 }, { x: 0, y: 0, z: 0 }); // Move to center and reset rotation
+        break;
+      case 2:
+        moveAndRotateModel({ x: -0.04, y: 0, z: -0.5 }, { x: 0, y: 180, z: 0 }); // Move left and rotate 180 degrees
+        break;
+      case 3:
+        moveAndRotateModel({ x: 0.04, y: 0, z: -0.5 }, { x: 0, y: 180, z: 0 }); // Move right (keep rotation)
+        break;
+      case 4:
+        moveAndRotateModel({ x: -0.04, y: 0, z: -0.5 }, { x: 0, y: 0, z: 0 }); // Move left and reset rotation
+        break;
+    }
+  }
+}
+
+// Initialize the first step
+updateStepCounter();
+updateAnnotations();
     </script>
   </body>
 </html>
