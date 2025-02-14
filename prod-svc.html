@@ -77,6 +77,25 @@
             margin-bottom: 10px;
         }
 
+        /* New Description Text */
+        #initial-description {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 18px;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            width: 90%;
+            max-width: 400px;
+            box-sizing: border-box;
+            z-index: 1000;
+        }
+
         /* Responsive adjustments */
         @media (max-width: 600px) {
             .button-container button {
@@ -96,6 +115,11 @@
 
             #description-list li {
                 font-size: 14px;
+            }
+
+            #initial-description {
+                font-size: 16px;
+                padding: 8px;
             }
         }
 
@@ -118,10 +142,20 @@
             #description-list li {
                 font-size: 12px;
             }
+
+            #initial-description {
+                font-size: 14px;
+                padding: 6px;
+            }
         }
     </style>
 </head>
 <body style="margin: 0; overflow: hidden;">
+    <!-- Initial Description Text -->
+    <div id="initial-description">
+        Please choose the device you want to get details of.
+    </div>
+
     <!-- AR Scene -->
     <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;" vr-mode-ui="enabled: false">
         <!-- Dynamic 3D Model Container -->
@@ -165,8 +199,8 @@
     </div>
     <div class="button-container model-buttons" id="tecno-buttons">
         <button class="nav-button" onclick="goBack()">&lt;</button>
-        <button onclick="loadModel('tecno-camon16', ['6.8-inch Display', '128GB Storage', '6GB RAM', 'Helio G70'])">Tecno Camon 16</button>
-        <button onclick="loadModel('tecno-spark7', ['6.5-inch Display', '64GB Storage', '4GB RAM', 'Helio A25'])">Tecno Spark 7</button>
+        <button onclick="loadModel('rout', ['Only @Price Br.3000', 'Supports 10 devices', 'Battery 2900 mah', 'With Screen Display', 'Produced @ Teleone'])">Mi-Fi</button>
+        <button onclick="loadModel('tecno-spark7', ['6.5-inch Display', '64GB Storage', '4GB RAM', 'Helio A25'])">Kimem nana</button>
         <button class="nav-button" onclick="goNext()">&gt;</button>
     </div>
 
@@ -228,7 +262,7 @@
             });
             document.getElementById('description-list').style.display = 'block'; // Show description list
         }
- 
+
         // Function to go back to the main category buttons
         function goBack() {
             // Hide the model buttons and show the category buttons
@@ -244,9 +278,9 @@
         }
 
         // Function to go to the next model (placeholder for now)
-       // function goNext() {
-       //     alert("Next");
-       // }
+        // function goNext() {
+        //     alert("Next");
+        // }
     </script>
 </body>
 </html>
