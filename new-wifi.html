@@ -42,6 +42,7 @@
         width: 90%;
         max-width: 300px;
         box-sizing: border-box;
+        display: none; /* Initially hidden */
       }
 
       .nav-buttons {
@@ -115,7 +116,7 @@
         scale="0.08 0.08 0.08"
         position="0 0 -0.5"
         rotation="0 0 0"
-        visible="true"
+        visible="false" <!-- Initially hidden -->
       ></a-entity>
 
       <!-- Annotations -->
@@ -123,7 +124,7 @@
         <!-- Annotation for SIM Card Slot -->
         <a-entity
           id="sim-card-annotation"
-          visible="true"
+          visible="false"
           line="start: 0 0 0; end: 0.02 0 0; color: red"
           position="0.001 0.02 -0.5"
         >
@@ -280,91 +281,100 @@
       }
 
       // Function to update the step counter
-function updateStepCounter() {
-  stepCounter.textContent = "Step " + currentStep + " / " + totalSteps;
-}
+      function updateStepCounter() {
+        stepCounter.textContent = "Step " + currentStep + " / " + totalSteps;
+      }
 
-// Function to move and rotate the model
-function moveAndRotateModel(position, rotation) {
-  const routerModel = document.getElementById("router-model");
+      // Function to move and rotate the model
+      function moveAndRotateModel(position, rotation) {
+        const routerModel = document.getElementById("router-model");
 
-  // Remove any existing animations
-  routerModel.removeAttribute("animation__position");
-  routerModel.removeAttribute("animation__rotation");
+        // Remove any existing animations
+        routerModel.removeAttribute("animation__position");
+        routerModel.removeAttribute("animation__rotation");
 
-  // Add new animations for position and rotation
-  if (position) {
-    routerModel.setAttribute("animation__position", {
-      property: "position",
-      to: position.x + " " + position.y + " " + position.z,
-      dur: 1000, // Duration of the movement in milliseconds
-      easing: "linear",
-    });
-  }
+        // Add new animations for position and rotation
+        if (position) {
+          routerModel.setAttribute("animation__position", {
+            property: "position",
+            to: position.x + " " + position.y + " " + position.z,
+            dur: 1000, // Duration of the movement in milliseconds
+            easing: "linear",
+          });
+        }
 
-  if (rotation) {
-    routerModel.setAttribute("animation__rotation", {
-      property: "rotation",
-      to: rotation.x + " " + rotation.y + " " + rotation.z,
-      dur: 1000, // Duration of the rotation in milliseconds
-      easing: "linear",
-    });
-  }
-}
+        if (rotation) {
+          routerModel.setAttribute("animation__rotation", {
+            property: "rotation",
+            to: rotation.x + " " + rotation.y + " " + rotation.z,
+            dur: 1000, // Duration of the rotation in milliseconds
+            easing: "linear",
+          });
+        }
+      }
 
-// Function to go to the next step
-function nextStep() {
-  if (currentStep < totalSteps) {
-    currentStep++;
-    updateStepCounter();
-    updateAnnotations();
+      // Function to go to the next step
+      function nextStep() {
+        if (currentStep < totalSteps) {
+          currentStep++;
+          updateStepCounter();
+          updateAnnotations();
 
-    // Move and rotate the model based on the step transition
-    switch (currentStep) {
-      case 2:
-        moveAndRotateModel({ x: -0.04, y: 0, z: -0.5 }, { x: 0, y: 180, z: 0 }); // Move left and rotate 180 degrees
-        break;
-      case 3:
-        moveAndRotateModel({ x: 0.04, y: 0, z: -0.5 }, { x: 0, y: 180, z: 0 }); // Move right (keep rotation)
-        break;
-      case 4:
-        moveAndRotateModel({ x: -0.04, y: 0, z: -0.5 }, { x: 0, y: 0, z: 0 }); // Move left and reset rotation
-        break;
-      case 5:
-        moveAndRotateModel({ x: 0, y: 0, z: -0.5 }, { x: 0, y: 0, z: 0 }); // Move to center and reset rotation
-        break;
-    }
-  }
-}
+          // Move and rotate the model based on the step transition
+          switch (currentStep) {
+            case 2:
+              moveAndRotateModel({ x: -0.04, y: 0, z: -0.5 }, { x: 0, y: 180, z: 0 }); // Move left and rotate 180 degrees
+              break;
+            case 3:
+              moveAndRotateModel({ x: 0.04, y: 0, z: -0.5 }, { x: 0, y: 180, z: 0 }); // Move right (keep rotation)
+              break;
+            case 4:
+              moveAndRotateModel({ x: -0.04, y: 0, z: -0.5 }, { x: 0, y: 0, z: 0 }); // Move left and reset rotation
+              break;
+            case 5:
+              moveAndRotateModel({ x: 0, y: 0, z: -0.5 }, { x: 0, y: 0, z: 0 }); // Move to center and reset rotation
+              break;
+          }
+        }
+      }
 
-// Function to go to the previous step
-function prevStep() {
-  if (currentStep > 1) {
-    currentStep--;
-    updateStepCounter();
-    updateAnnotations();
+      // Function to go to the previous step
+      function prevStep() {
+        if (currentStep > 1) {
+          currentStep--;
+          updateStepCounter();
+          updateAnnotations();
 
-    // Move and rotate the model based on the step transition
-    switch (currentStep) {
-      case 1:
-        moveAndRotateModel({ x: 0, y: 0, z: -0.5 }, { x: 0, y: 0, z: 0 }); // Move to center and reset rotation
-        break;
-      case 2:
-        moveAndRotateModel({ x: -0.04, y: 0, z: -0.5 }, { x: 0, y: 180, z: 0 }); // Move left and rotate 180 degrees
-        break;
-      case 3:
-        moveAndRotateModel({ x: 0.04, y: 0, z: -0.5 }, { x: 0, y: 180, z: 0 }); // Move right (keep rotation)
-        break;
-      case 4:
-        moveAndRotateModel({ x: -0.04, y: 0, z: -0.5 }, { x: 0, y: 0, z: 0 }); // Move left and reset rotation
-        break;
-    }
-  }
-}
+          // Move and rotate the model based on the step transition
+          switch (currentStep) {
+            case 1:
+              moveAndRotateModel({ x: 0, y: 0, z: -0.5 }, { x: 0, y: 0, z: 0 }); // Move to center and reset rotation
+              break;
+            case 2:
+              moveAndRotateModel({ x: -0.04, y: 0, z: -0.5 }, { x: 0, y: 180, z: 0 }); // Move left and rotate 180 degrees
+              break;
+            case 3:
+              moveAndRotateModel({ x: 0.04, y: 0, z: -0.5 }, { x: 0, y: 180, z: 0 }); // Move right (keep rotation)
+              break;
+            case 4:
+              moveAndRotateModel({ x: -0.04, y: 0, z: -0.5 }, { x: 0, y: 0, z: 0 }); // Move left and reset rotation
+              break;
+          }
+        }
+      }
 
-// Initialize the first step
-updateStepCounter();
-updateAnnotations();
+      // Initialize the first step
+      updateStepCounter();
+      updateAnnotations();
+
+      // Show the model and description after 10 seconds
+      setTimeout(() => {
+        const routerModel = document.getElementById("router-model");
+        const stepDescription = document.getElementById("step-description");
+
+        routerModel.setAttribute("visible", true);
+        stepDescription.style.display = "block";
+      }, 10000); // 10 seconds delay
     </script>
   </body>
 </html>
