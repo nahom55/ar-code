@@ -2,43 +2,49 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Markerless AR with A-Frame and AR.js</title>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/n5ro/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
-  </head>
-  <body style="margin: 0; overflow: hidden;">
-    <!-- A-Frame Scene with AR.js -->
-    <a-scene
-      embedded
-      arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;"
-      renderer="logarithmicDepthBuffer: true;"
-      vr-mode-ui="enabled: false"
-    >
-      <!-- Add a 3D Human Model -->
-      <a-entity
-        gltf-model="url(aaa22.glb)"
-        scale="0.015 0.015 0.015"
-        position="0 -0.4 -2"
-        
-        animation-mixer="clip: *; loop: false"
-      ></a-entity>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.0/dist/aframe-extras.min.js"></script>
+    <style>
+      /* Green background plane for buttons */
+      #button-container {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: green;
+        padding: 10px 0;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        z-index: 9999;
+        box-sizing: border-box;
+      }
 
-      <!-- AR Buttons -->
-      
-      <!-- Audio Element -->
-      <a-entity id="audioElement" sound="src: url(cl.mp3); autoplay: false;"></a-entity>
+      /* Button styling */
+      .ar-button {
+        background-color: white;
+        color: black;
+        border: none;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-family: Arial, sans-serif;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        flex: 1;
+        margin: 0 5px;
+        text-align: center;
+      }
 
-      <!-- Camera with cursor for interactions -->
-      <a-entity camera look-controls>
-        <a-cursor fuse="true" fuse-timeout="500"></a-cursor>
-      </a-entity>
-    </a-scene>
+      .ar-button:hover {
+        background-color: #f0f0f0;
+      }
 
-    <!-- Instructions -->
-    <div
-      style="
+      /* Instructions styling */
+      #instructions {
         position: absolute;
         top: 10px;
         left: 50%;
@@ -49,9 +55,83 @@
         background: rgba(0, 0, 0, 0.7);
         padding: 10px;
         border-radius: 5px;
-      "
+        width: 90%;
+        max-width: 400px;
+        box-sizing: border-box;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 600px) {
+        .ar-button {
+          font-size: 12px;
+          padding: 6px 12px;
+        }
+
+        #instructions {
+          font-size: 14px;
+          padding: 8px;
+        }
+      }
+
+      @media (max-width: 400px) {
+        .ar-button {
+          font-size: 10px;
+          padding: 4px 8px;
+        }
+
+        #instructions {
+          font-size: 12px;
+          padding: 6px;
+        }
+      }
+    </style>
+  </head>
+  <body style="margin: 0; overflow: hidden;">
+    <!-- A-Frame Scene with AR.js -->
+    <a-scene
+      embedded
+      arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;"
+      renderer="logarithmicDepthBuffer: true;"
+      vr-mode-ui="enabled: false"
+      colorManagement: true;
     >
+      <!-- Add a 3D Human Model -->
+      <a-entity
+        id="human-model"
+        gltf-model="url(aaa22.glb)"
+        scale="0.015 0.015 0.015"
+        position="0 -0.4 -2"
+        animation-mixer="clip: *; timeScale: 0; loop: once" <!-- Pause animation initially -->
+        visible="false" <!-- Initially hidden -->
+      ></a-entity>
+
+      <!-- AR Buttons -->
+      <a-entity id="serviceButtons" visible="false">
+        <!-- Buttons will be added here -->
+      </a-entity>
+
+      <!-- Audio Element -->
+      <a-entity id="audioElement" sound="src: url(cl.mp3); autoplay: false;"></a-entity>
+
+      <!-- Camera with cursor for interactions -->
+      <a-entity camera look-controls>
+        <a-cursor fuse="true" fuse-timeout="500" geometry="primitive: ring; radiusInner: 0; radiusOuter: 0"></a-cursor>
+      </a-entity>
+
+      <!-- Hit-testing for markerless AR -->
+      <a-entity id="hit-test" hit-test="enabled: true;"></a-entity>
+    </a-scene>
+
+    <!-- Instructions -->
+    <div id="instructions">
       <p>Point your camera at a flat surface to place the 3D model.</p>
+    </div>
+
+    <!-- Green background plane with buttons -->
+    <div id="button-container">
+      <button class="ar-button" id="service1">Setup Mi-Fi Router</button>
+      <button class="ar-button" id="service2">Get Operator</button>
+      <button class="ar-button" id="service3">Product & Service</button>
     </div>
 
     <script>
@@ -61,33 +141,51 @@
         audioElement.components.sound.playSound();
       }
 
+      // Show the 3D model, start animation, and play audio after 10 seconds
+      setTimeout(() => {
+        const humanModel = document.getElementById("human-model");
+        const audioElement = document.getElementById("audioElement");
+
+        humanModel.setAttribute("visible", true); // Show the model
+        humanModel.setAttribute("animation-mixer", "timeScale: 1"); // Start the animation
+        playAudio(); // Play the audio
+      }, 5000); // 10000 milliseconds = 10 seconds
+
       // Show AR buttons after 5 seconds
       setTimeout(() => {
         document.getElementById("serviceButtons").setAttribute("visible", true);
       }, 5000); // 5000 milliseconds = 5 seconds
 
-      // Attach click event listeners to the AR buttons.
+      // Attach click event listeners to the AR buttons
       document.addEventListener("DOMContentLoaded", function () {
-        // Play introductory audio
-        playAudio();
-
-        // Redirect Service 1 button to 'wif-ove.html' and play audio
+        // Redirect Service 1 button to 'new-wifi.html'
         document.getElementById("service1").addEventListener("click", function () {
-          playAudio();
-          setTimeout(() => {
-            window.location.href = "dong-cube.html";
-          }, 2000); // Wait for audio to finish before redirecting
+          window.location.href = "new-wifi.html";
         });
 
-        // Play audio for Service 2 button
+        // Add functionality for Service 2 button
         document.getElementById("service2").addEventListener("click", function () {
-          playAudio();
+          // Add your logic here
         });
 
-        // Play audio for Service 3 button
+        // Add functionality for Service 3 button
         document.getElementById("service3").addEventListener("click", function () {
-          playAudio();
+          window.location.href = "prod-svc.html";
         });
+      });
+
+      // Place the 3D model in the real world using hit-testing
+      const scene = document.querySelector("a-scene");
+      const hitTest = document.getElementById("hit-test");
+      const humanModel = document.getElementById("human-model");
+
+      hitTest.addEventListener("ar-hit-test-select", (event) => {
+        // Get the position where the user tapped/clicked
+        const position = event.detail.position;
+
+        // Move the 3D model to the selected position
+        humanModel.setAttribute("position", position);
+        humanModel.setAttribute("visible", true); // Make the model visible
       });
     </script>
   </body>
