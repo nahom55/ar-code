@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Smartphone AR Showcase</title>
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <style>
+        /* Button styling */
+        .button-container {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .button-container button {
+            padding: 10px 10px;
+            font-size: 16px;
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            flex: 1 1 auto;
+            margin: 1px;
+        }
+        .button-container button:hover {
+            background-color: rgb(0, 159, 0);
+        }
+        .model-buttons {
+            display: none; /* Hide model buttons initially */
+        }
+        /* Navigation buttons */
+        .nav-button {
+            font-size: 24px;
+            background-color: rgba(0, 123, 255, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* Description list styling */
+        #description-list {
+            position: absolute;
+            top: 50%;
+            left: 70%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            display: none; /* Hide initially */
+            text-align: center;
+            width: 40%;
+            max-width: 300px;
+            box-sizing: border-box;
+        }
+        #description-list ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: square;
+        }
+        #description-list li {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        /* New Description Text */
+        #initial-description {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 18px;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            width: 90%;
+            max-width: 400px;
+            box-sizing: border-box;
+            z-index: 1000;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .button-container button {
+                font-size: 14px;
+                padding: 8px 10px;
+            }
+
+            .nav-button {
+                font-size: 20px;
+                width: 35px;
+                height: 35px;
+            }
+
+            #description-list {
+                padding: 15px;
+            }
+
+            #description-list li {
+                font-size: 14px;
+            }
+
+            #initial-description {
+                font-size: 16px;
+                padding: 8px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .button-container button {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+
+            .nav-button {
+                font-size: 18px;
+                width: 30px;
+                height: 30px;
+            }
+
+            #description-list {
+                padding: 10px;
+            }
+
+            #description-list li {
+                font-size: 12px;
+            }
+
+            #initial-description {
+                font-size: 14px;
+                padding: 6px;
+            }
+        }
+    </style>
+</head>
+<body style="margin: 0; overflow: hidden;">
+    <!-- Initial Description Text -->
+    <div id="initial-description">
+        Please choose the device you want to get details of.
+    </div>
+
+    <!-- AR Scene -->
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;" vr-mode-ui="enabled: false">
+        <!-- Dynamic 3D Model Container -->
+        <a-entity id="model-container" scale="0.003 0.003 0.003" position="-0.1 -0.02 -1">
+            <!-- Rotatable 3D Model -->
+            <a-entity id="rotatable-model" rotation="0 180 0">
+                <!-- 3D model will be inserted here -->
+            </a-entity>
+        </a-entity>
+
+        <!-- Camera with look controls -->
+        <a-entity camera look-controls>
+            <!-- Cursor for interaction -->
+            <a-entity cursor="fuse: true; fuseTimeout: 500"
+                      position="0 0 -1"
+                      geometry="primitive: ring; radiusInner: 0; radiusOuter: 0"
+                      material="color: #007BFF; shader: flat">
+            </a-entity>
+        </a-entity>
+    </a-scene>
+
+    <!-- Category Buttons -->
+    <div class="button-container" id="category-buttons">
+        <button onclick="showModelButtons('samsung')">Samsung</button>
+        <button onclick="showModelButtons('itel')">Itel</button>
+        <button onclick="showModelButtons('tecno')">Kimem</button>
+    </div>
+
+    <!-- Model Buttons with Navigation (Hidden Initially) -->
+    <div class="button-container model-buttons" id="samsung-buttons">
+        <button class="nav-button" onclick="goBack()">&lt;</button>
+        <button onclick="loadModel('sam', ['Only @Price Br.25000  ', 'RAM 6 GB', 'Storage 128 GB', 'Font camera 12 MP', 'Back camera 5 MP', 'Battery 5100 mah', 'Screen 6.5\'', 'Produced @ Samsung'])">Samsung S21</button>
+        <button onclick="loadModel('samsung-a52', ['6.5-inch Display', '128GB Storage', '6GB RAM', 'Snapdragon 720G'])">Samsung A52</button>
+        <button class="nav-button" onclick="goNext()">&gt;</button>
+    </div>
+    <div class="button-container model-buttons" id="itel-buttons">
+        <button class="nav-button" onclick="goBack()">&lt;</button>
+        <button onclick="loadModel('itel-a56', ['6.0-inch Display', '32GB Storage', '2GB RAM', 'Quad-core Processor'])">Itel A56</button>
+        <button onclick="loadModel('itel-s16', ['6.5-inch Display', '64GB Storage', '3GB RAM', 'Octa-core Processor'])">Itel S16</button>
+        <button class="nav-button" onclick="goNext()">&gt;</button>
+    </div>
+    <div class="button-container model-buttons" id="tecno-buttons">
+        <button class="nav-button" onclick="goBack()">&lt;</button>
+        <button onclick="loadModel('rout', ['Only @Price Br.3000', 'Supports 10 devices', 'Battery 2900 mah', 'With Screen Display', 'Produced @ Teleone'])">Mi-Fi</button>
+        <button onclick="loadModel('tecno-spark7', ['6.5-inch Display', '64GB Storage', '4GB RAM', 'Helio A25'])">Kimem nana</button>
+        <button class="nav-button" onclick="goNext()">&gt;</button>
+    </div>
+
+    <!-- Description List (Hidden Initially) -->
+    <div id="description-list">
+        <ul id="description-items"></ul>
+    </div>
+
+    <script>
+        let currentCategory = null;
+
+        // Function to show model buttons based on category
+        function showModelButtons(category) {
+            currentCategory = category;
+            // Hide all model buttons
+            document.querySelectorAll('.model-buttons').forEach(buttonGroup => {
+                buttonGroup.style.display = 'none';
+            });
+            document.getElementById('description-list').style.display = 'none'; // Hide description list
+
+            // Hide category buttons
+            document.getElementById('category-buttons').style.display = 'none';
+
+            // Show the selected category's model buttons
+            document.getElementById(`${category}-buttons`).style.display = 'flex';
+        }
+
+        // Function to load 3D models and update description dynamically
+        function loadModel(modelName, descriptionItems) {
+            // Remove any existing model
+            const modelContainer = document.getElementById('rotatable-model');
+            modelContainer.innerHTML = '';
+
+            // Create a new 3D model entity
+            const modelEntity = document.createElement('a-entity');
+            modelEntity.setAttribute('gltf-model', `${modelName}.glb`);
+            modelEntity.setAttribute('position', '0 0 0');
+            modelEntity.setAttribute('scale', '1 1 1'); // Adjust scale as needed
+
+            // Add rotation animation
+            modelEntity.setAttribute('animation', {
+                property: 'rotation',
+                to: '0 360 0',
+                loop: true,
+                dur: 10000, // 10 seconds for a full rotation
+                easing: 'linear'
+            });
+
+            // Append the new model to the container
+            modelContainer.appendChild(modelEntity);
+
+            // Update the description list
+            const descriptionList = document.getElementById('description-items');
+            descriptionList.innerHTML = ''; // Clear previous items
+            descriptionItems.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item;
+                descriptionList.appendChild(li);
+            });
+            document.getElementById('description-list').style.display = 'block'; // Show description list
+        }
+
+        // Function to go back to the main category buttons
+        function goBack() {
+            // Hide the model buttons and show the category buttons
+            document.querySelectorAll('.model-buttons').forEach(buttonGroup => {
+                buttonGroup.style.display = 'none';
+            });
+            document.getElementById('category-buttons').style.display = 'flex';
+
+            // Clear the 3D model and reset the description
+            const modelContainer = document.getElementById('rotatable-model');
+            modelContainer.innerHTML = '';
+            document.getElementById('description-list').style.display = 'none'; // Hide description list
+        }
+
+        // Function to go to the next model (placeholder for now)
+        // function goNext() {
+        //     alert("Next");
+        // }
+    </script>
+</body>
+</html>
