@@ -90,15 +90,14 @@
     <!-- A-Frame Scene with AR.js -->
     <a-scene
       embedded
-      arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;"
+      arjs="sourceType: webcam; debugUIEnabled: true; trackingMethod: best;"
       renderer="logarithmicDepthBuffer: true;"
       vr-mode-ui="enabled: false"
-      colorManagement: true;
     >
       <!-- Add a 3D Human Model -->
       <a-entity
         id="human-model"
-        gltf-model="url(aaa22.glb)"
+        gltf-model="url(https://cdn.glitch.global/your-model-path/aaa22.glb)"
         scale="0.015 0.015 0.015"
         position="0 -0.4 -2"
         animation-mixer="clip: *; timeScale: 0; loop: once" <!-- Pause animation initially -->
@@ -111,7 +110,7 @@
       </a-entity>
 
       <!-- Audio Element -->
-      <a-entity id="audioElement" sound="src: url(cl.mp3); autoplay: false;"></a-entity>
+      <a-entity id="audioElement" sound="src: url(https://cdn.glitch.global/your-audio-path/cl.mp3); autoplay: false;"></a-entity>
 
       <!-- Camera with cursor for interactions -->
       <a-entity camera look-controls>
@@ -149,7 +148,7 @@
         humanModel.setAttribute("visible", true); // Show the model
         humanModel.setAttribute("animation-mixer", "timeScale: 1"); // Start the animation
         playAudio(); // Play the audio
-      }, 5000); // 10000 milliseconds = 10 seconds
+      }, 5000); // 5000 milliseconds = 5 seconds
 
       // Show AR buttons after 5 seconds
       setTimeout(() => {
