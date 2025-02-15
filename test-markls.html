@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ar-js-org/ar.js@latest/aframe/build/aframe-ar.min.js"></script>
+  </head>
+  <body style="margin: 0; overflow: hidden;">
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;" renderer="antialias: true;">
+      
+      <!-- Camera with cursor for tap interaction -->
+      <a-entity camera look-controls>
+        <a-cursor></a-cursor>
+      </a-entity>
+      
+      <!-- Reticle to show where objects will be placed -->
+      <a-entity id="reticle" geometry="primitive: ring; radiusInner: 0.03; radiusOuter: 0.05;" material="color: red; shader: flat;" visible="false"></a-entity>
+      
+      <!-- Script for hit-test and object placement -->
+      <script>
+        AFRAME.registerComponent('tap-place', {
+          init: function () {
+            const scene = this.el;
+            const reticle = document.getElementById('reticle');
+            const xrSession = scene.renderer.xr.getSession();
+
+            if (xrSession) {
+              xrSession.addEventListener('select', (event) => {
+                if (reticle.object3D.visible) {
+                  const newBox = document.createElement('a-box');
+                  newBox.setAttribute('position', reticle.getAttribute('position'));
+                  newBox.setAttribute('depth', '0.2');
+                  newBox.setAttribute('height', '0.2');
+                  newBox.setAttribute('width', '0.2');
+                  newBox.setAttribute('color', 'blue');
+                  scene.appendChild(newBox);
+                }
+              });
+            }
+          }
+        });
+        
+        AFRAME.registerComponent('hit-test', {
+          init: function () {
+            const scene = this.el;
+            const reticle = document.getElementById('reticle');
+            const xrSession = scene.renderer.xr.getSession();
+            if (!xrSession) return;
+            
+            xrSession.requestReferenceSpace('viewer').then((viewerSpace) => {
+              xrSession.requestHitTestSource({ space: viewerSpace }).then((hitTestSource) => {
+                scene.renderer.xr.addEventListener('xrframe', (event) => {
+                  const frame = event.detail;
+                  const viewerPose = frame.getViewerPose(scene.renderer.xr.getReferenceSpace());
+                  if (!viewerPose) return;
+                  
+                  const hitTestResults = frame.getHitTestResults(hitTestSource);
+                  if (hitTestResults.length > 0) {
+                    const hitPose = hitTestResults[0].getPose(scene.renderer.xr.getReferenceSpace());
+                    reticle.setAttribute('position', hitPose.transform.position);
+                    reticle.object3D.visible = true;
+                  } else {
+                    reticle.object3D.visible = false;
+                  }
+                });
+              });
+            });
+          }
+        });
+      </script>
+
+      <!-- Activate the hit-test and tap-place functionality -->
+      <a-entity hit-test tap-place></a-entity>
+
+    </a-scene>
+  </body>
+</html>
