@@ -1,79 +1,303 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Fixed Object Placement in AR</title>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Smartphone AR Showcase</title>
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const scene = document.querySelector("a-scene");
-        const camera = document.querySelector("[camera]");
+    <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-drag-drop-component@^1.0.0/dist/aframe-drag-drop-component.min.js"></script>
+    <style>
+        /* Button styling */
+        .button-container {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .button-container button {
+            padding: 10px 10px;
+            font-size: 16px;
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            flex: 1 1 auto;
+            margin: 1px;
+        }
+        .button-container button:hover {
+            background-color: rgb(0, 159, 0);
+        }
+        .model-buttons {
+            display: none; /* Hide model buttons initially */
+        }
+        /* Navigation buttons */
+        .nav-button {
+            font-size: 24px;
+            background-color: rgba(0, 123, 255, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-        // Debugging: Log when the scene is loaded
-        console.log("Scene loaded");
+        /* Compare Devices Checkbox */
+        .compare-checkbox {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            color: white;
+            font-size: 16px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+        }
 
-        // Listen for click events
-        scene.addEventListener("click", (event) => {
-          console.log("Click event detected");
+        /* New Description Text */
+        #initial-description {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 18px;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            width: 90%;
+            max-width: 400px;
+            box-sizing: border-box;
+            z-index: 1000;
+        }
 
-          // Get the camera's current position and rotation
-          const cameraPosition = camera.getAttribute("position");
-          const cameraRotation = camera.getAttribute("rotation");
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .button-container button {
+                font-size: 14px;
+                padding: 8px 10px;
+            }
 
-          // Calculate the position 2 meters in front of the camera in world space
-          const distance = 2; // Distance in meters
-          const theta = THREE.MathUtils.degToRad(cameraRotation.y); // Convert degrees to radians
-          const offsetX = -distance * Math.sin(theta);
-          const offsetZ = -distance * Math.cos(theta);
+            .nav-button {
+                font-size: 20px;
+                width: 35px;
+                height: 35px;
+            }
 
-          const objectPosition = {
-            x: cameraPosition.x + offsetX,
-            y: cameraPosition.y,
-            z: cameraPosition.z + offsetZ,
-          };
+            #initial-description {
+                font-size: 16px;
+                padding: 8px;
+            }
 
-          // Create a new box at the calculated position
-          const box = document.createElement("a-box");
-          box.setAttribute("position", objectPosition);
-          box.setAttribute("color", "red");
-          box.setAttribute("scale", "0.2 0.2 0.2"); // Small box
+            .compare-checkbox {
+                font-size: 14px;
+                padding: 8px;
+                bottom: 70px;
+            }
+        }
 
-          // Add the box to the scene
-          scene.appendChild(box);
-          console.log("Box added to the scene at:", objectPosition);
-        });
-      });
+        @media (max-width: 400px) {
+            .button-container button {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
 
-      scene.addEventListener("click", (event) => {
-  const camera = document.querySelector("[camera]");
-  const direction = new THREE.Vector3();
-  camera.object3D.getWorldDirection(direction); // Get the camera's forward direction
+            .nav-button {
+                font-size: 18px;
+                width: 30px;
+                height: 30px;
+            }
 
-  const distance = 2; // Distance in meters
-  const objectPosition = direction.multiplyScalar(distance).add(camera.object3D.position);
+            #initial-description {
+                font-size: 14px;
+                padding: 6px;
+            }
 
-  // Create a new box at the calculated position
-  const box = document.createElement("a-box");
-  box.setAttribute("position", objectPosition);
-  box.setAttribute("color", "blue");
-  box.setAttribute("scale", "0.2 0.2 0.2");
+            .compare-checkbox {
+                font-size: 12px;
+                padding: 6px;
+                bottom: 60px;
+            }
+        }
+    </style>
+</head>
+<body style="margin: 0; overflow: hidden;">
+    <!-- Initial Description Text -->
+    <div id="initial-description">
+        Please choose the device you want to get details of.
+    </div>
 
-  // Add the box to the scene
-  scene.appendChild(box);
-  console.log("Box added to the scene at:", objectPosition);
-});
+    <!-- Compare Devices Checkbox -->
+    <div class="compare-checkbox">
+        <label>
+            <input type="checkbox" id="compare-checkbox"> Compare Devices
+        </label>
+    </div>
 
-    </script>
-  </head>
-  <body style="margin: 0; overflow: hidden;">
-    <a-scene
-      embedded
-      arjs="sourceType: webcam; debugUIEnabled: true;"
-      renderer="logarithmicDepthBuffer: true;"
-    >
-      <!-- Camera -->
-      <a-entity camera look-controls></a-entity>
+    <!-- AR Scene -->
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;" vr-mode-ui="enabled: false">
+        <!-- Dynamic 3D Models will be inserted here -->
+        <a-entity id="models-container"></a-entity>
+
+        <!-- Camera with look controls -->
+        <a-entity camera look-controls>
+            <!-- Cursor for interaction -->
+            <a-entity cursor="fuse: true; fuseTimeout: 500"
+                      position="0 0 -1"
+                      geometry="primitive: ring; radiusInner: 0; radiusOuter: 0"
+                      material="color: #007BFF; shader: flat">
+            </a-entity>
+        </a-entity>
     </a-scene>
-  </body>
+
+    <!-- Category Buttons -->
+    <div class="button-container" id="category-buttons">
+        <button onclick="showModelButtons('samsung')">Samsung</button>
+        <button onclick="showModelButtons('itel')">Itel</button>
+        <button onclick="showModelButtons('tecno')">Kimem</button>
+    </div>
+
+    <!-- Model Buttons with Navigation (Hidden Initially) -->
+    <div class="button-container model-buttons" id="samsung-buttons">
+        <button class="nav-button" onclick="goBack()">&lt;</button>
+        <button onclick="loadModel('sam', ['Only @Price Br.25000', 'RAM 6 GB', 'Storage 128 GB', 'Font camera 12 MP', 'Back camera 5 MP', 'Battery 5100 mah', 'Screen 6.5\'', 'Produced @ Samsung'])">Samsung S21</button>
+        <button onclick="loadModel('samsung-a52', ['6.5-inch Display', '128GB Storage', '6GB RAM', 'Snapdragon 720G'])">Samsung A52</button>
+        <button class="nav-button" onclick="goNext()">&gt;</button>
+    </div>
+    <div class="button-container model-buttons" id="itel-buttons">
+        <button class="nav-button" onclick="goBack()">&lt;</button>
+        <button onclick="loadModel('s21', ['6.0-inch Display', '32GB Storage', '2GB RAM', 'Quad-core Processor'])">Itel A21</button>
+        <button onclick="loadModel('s22', ['6.5-inch Display', '64GB Storage', '3GB RAM', 'Octa-core Processor'])">Itel S22</button>
+        <button class="nav-button" onclick="goNext()">&gt;</button>
+    </div>
+    <div class="button-container model-buttons" id="tecno-buttons">
+        <button class="nav-button" onclick="goBack()">&lt;</button>
+        <button onclick="loadModel('rout', ['Only @Price Br.3000', 'Supports 10 devices', 'Battery 2900 mah', 'With Screen Display', 'Produced @ Teleone'])">Mi-Fi</button>
+        <button onclick="loadModel('tecno-spark7', ['6.5-inch Display', '64GB Storage', '4GB RAM', 'Helio A25'])">Kimem nana</button>
+        <button class="nav-button" onclick="goNext()">&gt;</button>
+    </div>
+
+    <script>
+        let currentCategory = null;
+        let selectedModel = null; // Track the currently selected model
+        let modelCount = 0; // Track the number of models loaded
+
+        // Function to load 3D models
+        function loadModel(modelName, descriptionItems) {
+            const compareMode = document.getElementById('compare-checkbox').checked;
+
+            // Calculate the position based on compare mode
+            const position = compareMode
+                ? { x: 0.5 * modelCount, y: 0, z: -1.5 } // Compare mode: increment X position
+                : { x: 0, y: 0, z: -1.5 }; // Single mode: fixed position
+
+            // Remove previous model if not in compare mode
+            if (!compareMode) {
+                const modelsContainer = document.getElementById('models-container');
+                while (modelsContainer.firstChild) {
+                    modelsContainer.removeChild(modelsContainer.firstChild);
+                }
+                modelCount = 0; // Reset model count
+            }
+
+            // 1. Create a new model entity
+            const modelEntity = document.createElement('a-entity');
+            modelEntity.setAttribute('gltf-model', `${modelName}.glb`);
+            modelEntity.setAttribute('position', position);
+            modelEntity.setAttribute('scale', '0.005 0.005 0.005'); // Adjusted for visibility
+
+            // 2. Add rotation animation
+            modelEntity.setAttribute('animation', {
+                property: 'rotation',
+                to: '0 360 0',
+                loop: true,
+                dur: 10000,
+                easing: 'linear'
+            });
+
+            // 3. Add click handler for selection
+            modelEntity.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (selectedModel) {
+                    selectedModel.removeAttribute('draggable');
+                }
+                selectedModel = modelEntity;
+                modelEntity.setAttribute('draggable', '');
+            });
+
+            // 4. Add model to the scene
+            document.getElementById('models-container').appendChild(modelEntity);
+
+            // 5. Create a text plane for the description
+            const textPlane = document.createElement('a-entity');
+            textPlane.setAttribute('text', {
+                value: descriptionItems.join('\n'), // Join description items with newlines
+                color: 'white',
+                align: 'left',
+                width: 0.2,
+                wrapCount: 20
+            });
+            textPlane.setAttribute('geometry', {
+                primitive: 'plane',
+                width: 0.2,
+                height: 0.2
+            });
+            textPlane.setAttribute('material', {
+                color: 'black',
+                opacity: 0.8
+            });
+            textPlane.setAttribute('position', {
+                x: position.x + 0.25, // Adjust the X position to place it next to the model
+                y: position.y,
+                z: position.z
+            });
+
+            // 6. Add the text plane to the scene
+            document.getElementById('models-container').appendChild(textPlane);
+
+            // Increment the model count
+            modelCount++;
+        }
+
+        // Function to show model buttons based on category
+        function showModelButtons(category) {
+            currentCategory = category;
+            // Hide all model buttons
+            document.querySelectorAll('.model-buttons').forEach(buttonGroup => {
+                buttonGroup.style.display = 'none';
+            });
+
+            // Hide category buttons
+            document.getElementById('category-buttons').style.display = 'none';
+
+            // Show the selected category's model buttons
+            document.getElementById(`${category}-buttons`).style.display = 'flex';
+        }
+
+        // Function to go back to the main category buttons
+        function goBack() {
+            // Hide the model buttons and show the category buttons
+            document.querySelectorAll('.model-buttons').forEach(buttonGroup => {
+                buttonGroup.style.display = 'none';
+            });
+            document.getElementById('category-buttons').style.display = 'flex';
+        }
+    </script>
+</body>
 </html>
