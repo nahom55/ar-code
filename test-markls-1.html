@@ -19,11 +19,15 @@
             display: flex;
             gap: 5px;
             align-items: center;
-            flex-wrap: wrap;
+            flex-wrap: nowrap; /* Prevent wrapping to the next line */
             justify-content: center;
             background: rgba(0, 0, 0, 0.7);
             padding: 10px;
             border-radius: 5px;
+            width: 90%; /* Ensure the container fits within the screen */
+            max-width: 600px; /* Limit maximum width */
+            overflow-x: auto; /* Enable horizontal scrolling for buttons */
+            white-space: nowrap; /* Prevent text wrapping */
         }
         .button-container button {
             padding: 10px 10px;
@@ -33,7 +37,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            flex: 1 1 auto;
+            flex: 0 0 auto; /* Prevent buttons from shrinking */
             margin: 1px;
         }
         .button-container button:hover {
@@ -50,6 +54,7 @@
             gap: 5px;
             color: white;
             font-size: 16px;
+            flex: 0 0 auto; /* Prevent checkbox from shrinking */
         }
         .compare-checkbox input {
             margin: 0;
@@ -68,6 +73,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex: 0 0 auto; /* Prevent navigation buttons from shrinking */
         }
 
         /* New Description Text */
@@ -155,7 +161,7 @@
             // Calculate the position based on compare mode
             const position = compareMode
                 ? { x: 0.8 * modelCount, y: 0, z: -1.5 } // Compare mode: increment X position only (reduced gap)
-                : { x: 0, y: 0, z: -1.5 }; // Single mode: fixed position
+                : { x: -0.17, y: 0, z: -1.5 }; // Single mode: fixed position
 
             // Remove previous model if not in compare mode
             if (!compareMode) {
@@ -216,7 +222,7 @@
             title.setAttribute('value', 'Device Details');
             title.setAttribute('color', '#4CAF50');
             title.setAttribute('align', 'center');
-            title.setAttribute('position', '-0.025 0.08 0.01'); // Move title slightly upward
+            title.setAttribute('position', '-0.024 0.08 0.01'); // Move title slightly upward
             title.setAttribute('scale', '0.15 0.15 0.15');
             textPlane.appendChild(title);
 
@@ -269,6 +275,7 @@
         let startX = 0;
         let startY = 0;
 
+        // Mouse events for desktop
         document.addEventListener('mousedown', (e) => {
             isDragging = true;
             startX = e.clientX;
@@ -291,6 +298,32 @@
         });
 
         document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        // Touch events for mobile
+        document.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (isDragging) {
+                const deltaX = e.touches[0].clientX - startX;
+                const deltaY = e.touches[0].clientY - startY;
+                const cameraPosition = camera.getAttribute('position');
+                camera.setAttribute('position', {
+                    x: cameraPosition.x - deltaX * 0.01, // Adjust sensitivity
+                    y: cameraPosition.y,
+                    z: cameraPosition.z
+                });
+                startX = e.touches[0].clientX;
+                startY = e.touches[0].clientY;
+            }
+        });
+
+        document.addEventListener('touchend', () => {
             isDragging = false;
         });
     </script>
