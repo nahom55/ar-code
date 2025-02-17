@@ -91,9 +91,9 @@
     <a-scene
       embedded
       arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;"
-      renderer="logarithmicDepthBuffer: true;"
+      renderer="logarithmicDepthBuffer: true; colorManagement: true"
       vr-mode-ui="enabled: false"
-      colorManagement: true;
+
     >
       <!-- Add a 3D Human Model -->
       <a-entity
@@ -167,7 +167,7 @@
 
         // Add functionality for Service 3 button
         document.getElementById("service3").addEventListener("click", function () {
-          window.location.href = "prod-svc.html";
+          window.location.href = "test-markls-1.html";
         });
       });
     </script>

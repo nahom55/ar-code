@@ -9,21 +9,15 @@
     <style>
       /* CSS for step counter, description, and buttons */
       .step-counter {
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        color: green;
+        color: white;
         font-size: 24px;
         font-family: Arial, sans-serif;
-        z-index: 1000;
         text-align: center;
-        background: rgba(0, 0, 0, 0.7);
+        background: green;
         padding: 10px;
         border-radius: 5px;
-        width: 90%;
-        max-width: 300px;
-        box-sizing: border-box;
+        flex: 1; /* Allow the step counter to grow and take available space */
+        margin: 0 10px; /* Add spacing between buttons and step counter */
       }
 
       .step-description {
@@ -36,7 +30,7 @@
         font-family: Arial, sans-serif;
         z-index: 1000;
         text-align: center;
-        background: rgba(0, 0, 0, 0.7);
+        background: green;
         padding: 10px;
         border-radius: 5px;
         width: 90%;
@@ -53,6 +47,7 @@
         z-index: 1000;
         display: flex;
         justify-content: center;
+        align-items: center; /* Vertically center items */
         gap: 10px;
         width: 90%;
         max-width: 400px;
@@ -66,7 +61,7 @@
         color: white;
         border: none;
         border-radius: 5px;
-        flex: 1;
+        flex: 1; /* Allow buttons to grow and take equal space */
         text-align: center;
       }
 
@@ -132,7 +127,7 @@
             position="0.052 0 -0.01"
             width="0.06"
             height="0.02"
-            material="color: black; opacity: 0.7">
+            material="color: green; opacity: 0.7">
           </a-plane>
           <a-text
             value="Insert SIM card"
@@ -154,7 +149,7 @@
             position="-0.028 0 -0.01"
             width="0.055"
             height="0.01"
-            material="color: black; opacity: 0.7">
+            material="color: green; opacity: 0.7">
           </a-plane>
           <a-text
             value="Wi-Fi Name"
@@ -176,7 +171,7 @@
             position="-0.028 -0.0005 -0.01"
             width="0.055"
             height="0.01"
-            material="color: black; opacity: 0.7">
+            material="color: green; opacity: 0.7">
           </a-plane>
           <a-text
             value="Wi-Fi Password"
@@ -198,7 +193,7 @@
             position="-0.028 -0.001 -0.01"
             width="0.055"
             height="0.01"
-            material="color: black; opacity: 0.7">
+            material="color: green; opacity: 0.7">
           </a-plane>
           <a-text
             value="Wi-Fi IP Address"
@@ -220,7 +215,7 @@
             position="0.045 0 -0.01"
             width="0.068"
             height="0.02"
-            material="color: black; opacity: 0.7">
+            material="color: green; opacity: 0.7">
           </a-plane>
           <a-text
             value="Press Power Button"
@@ -236,15 +231,13 @@
       <a-entity camera></a-entity>
     </a-scene>
 
-    <!-- Step Counter -->
-    <div class="step-counter" id="step-counter">Step 1 / 5</div>
-
     <!-- Step Description -->
     <div class="step-description" id="step-description">Wait for the router to initialize.</div>
 
-    <!-- Navigation Buttons -->
+    <!-- Navigation Buttons and Step Counter -->
     <div class="nav-buttons">
       <button id="prev-button" onclick="prevStep()">Previous</button>
+      <div class="step-counter" id="step-counter">Step 1 / 5</div>
       <button id="next-button" onclick="nextStep()">Next</button>
     </div>
 
