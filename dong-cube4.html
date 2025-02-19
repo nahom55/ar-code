@@ -91,9 +91,8 @@
     <a-scene
       embedded
       arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;"
-      renderer="logarithmicDepthBuffer: true; colorManagement: true, exposure: 1.0; toneMapping: ACESFilmic;"
+      renderer="logarithmicDepthBuffer: true; colorManagement: true, exposure: 0.7; toneMapping: ACESFilmic; physicallyCorrectLights: true; outputEncoding: sRGBEncoding;" 
       vr-mode-ui="enabled: false"
-
     >
       <!-- Add a 3D Human Model -->
       <a-entity
