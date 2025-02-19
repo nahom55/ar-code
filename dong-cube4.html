@@ -7,92 +7,192 @@
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.0/dist/aframe-extras.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
     <style>
-      /* Green background plane for buttons */
-      #button-container {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background-color: green;
-        padding: 10px 0;
-        display: flex;
-        justify-content: space-evenly;
-        align-items: center;
-        z-index: 9999;
-        box-sizing: border-box;
-      }
+                /* Green background plane for buttons */
+                #button-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: green;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            z-index: 9999;
+            box-sizing: border-box;
+        }
 
-      /* Button styling */
-      .ar-button {
-        background-color: white;
-        color: black;
-        border: none;
-        padding: 8px 16px;
-        font-size: 14px;
-        font-family: Arial, sans-serif;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        flex: 1;
-        margin: 0 5px;
-        text-align: center;
-      }
-
-      .ar-button:hover {
-        background-color: #f0f0f0;
-      }
-
-      /* Instructions styling */
-      #instructions {
-        position: absolute;
-        top: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        color: white;
-        font-family: Arial, sans-serif;
-        text-align: center;
-        background: rgba(0, 0, 0, 0.7);
-        padding: 10px;
-        border-radius: 5px;
-        width: 90%;
-        max-width: 400px;
-        box-sizing: border-box;
-      }
-
-      /* Responsive adjustments */
-      @media (max-width: 600px) {
+        /* Button styling */
         .ar-button {
-          font-size: 12px;
-          padding: 6px 12px;
+            background-color: white;
+            color: black;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            flex: 1;
+            margin: 0 5px;
+            text-align: center;
         }
 
-        #instructions {
-          font-size: 14px;
-          padding: 8px;
-        }
-      }
-
-      @media (max-width: 400px) {
-        .ar-button {
-          font-size: 10px;
-          padding: 4px 8px;
+        .ar-button:hover {
+            background-color: #f0f0f0;
         }
 
-        #instructions {
-          font-size: 12px;
-          padding: 6px;
+        /* Hamburger Menu */
+        #hamburger-menu {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10000;
+            cursor: pointer;
+            color: white;
+            font-size: 24px;
         }
-      }
+
+        #nav-menu {
+            position: absolute;
+            top: 50px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 5px;
+            padding: 10px;
+            display: none;
+            z-index: 10000;
+        }
+
+        #nav-menu a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            font-family: Arial, sans-serif;
+        }
+
+        #nav-menu a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Footer */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            background-color: #242424;
+            z-index: 10000; /* Ensure footer is above A-Frame scene */
+            box-sizing: border-box;
+        }
+
+        .input-area {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px;
+            background-color: #333;
+            border-radius: 25px;
+        }
+
+        .input-area button {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #4CAF50; /* Green */
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .input-area button i {
+            color: #fff;
+        }
+
+        .input-area button.active { /* Added style */
+            background-color: red;
+        }
+
+        .input-area input[type="text"] {
+            flex: 1;
+            background-color: transparent;
+            border: none;
+            color: #fff;
+            padding: 10px;
+        }
+
+        .input-area input[type="text"]::placeholder {
+            color: #aaa;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .ar-button {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            .input-area {
+                padding: 6px;
+            }
+
+            .input-area button {
+                width: 30px;
+                height: 30px;
+            }
+
+            .input-area input[type="text"] {
+                padding: 8px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .ar-button {
+                font-size: 10px;
+                padding: 4px 8px;
+            }
+
+            .input-area {
+                padding: 4px;
+            }
+
+            .input-area button {
+                width: 25px;
+                height: 25px;
+            }
+
+            .input-area input[type="text"] {
+                padding: 6px;
+            }
+        }
     </style>
   </head>
   <body style="margin: 0; overflow: hidden;">
+    <!-- Hamburger Menu -->
+    <div id="nav-menu">
+      <a href=''>Home</a>
+      <a href='new-wifi.html'>Setup wifi</a>
+      <a href='devices.html'>Devices</a>
+  </div>
+  <!-- Initial Description Text -->
+  <div id="initial-description">Point your camera at a flat surface to place the 3D model<div id="hamburger-menu">
+      <i class="fas fa-bars"></i>
+  </div>
+  </div>
     <!-- A-Frame Scene with AR.js -->
     <a-scene
       embedded
       arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;"
-      renderer="logarithmicDepthBuffer: true; colorManagement: true, exposure: 1.2; toneMapping: ACESFilmic; physicallyCorrectLights: true; " 
+      renderer="logarithmicDepthBuffer: true; colorManagement: true, exposure: 1.0; toneMapping: ACESFilmic;"
       vr-mode-ui="enabled: false"
+
     >
       <!-- Add a 3D Human Model -->
       <a-entity
@@ -118,19 +218,44 @@
       </a-entity>
     </a-scene>
 
-    <!-- Instructions -->
-    <div id="instructions">
-      <p>Point your camera at a flat surface to place the 3D model.</p>
-    </div>
+    
 
     <!-- Green background plane with buttons -->
-    <div id="button-container">
-      <button class="ar-button" id="service1">Setup Mi-Fi Router</button>
-      <button class="ar-button" id="service2">Get Operator</button>
-      <button class="ar-button" id="service3">Product & Service</button>
-    </div>
+    <footer>
+        <div class="input-area">
+            <button class="mic-button"><i class="fas fa-microphone"></i></button>
+            <button class="video-button"><i class="fas fa-video"></i></button>
+            <input type="text" placeholder="Type something" id="textInput">
+            <button class="send-button"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </footer>
 
     <script>
+      const hamburgerMenu = document.getElementById("hamburger-menu");
+        const navMenu = document.getElementById("nav-menu");
+//
+navMenu.addEventListener("click", function(e){
+  clicker(e);
+});2
+function clicker(e){
+  e.preventDefault();
+const btn=e.target.textContent;
+if(btn=="Home"){
+  window.location.href="http://127.0.0.1:5500/frontpage.html";
+}
+if(btn=="Devices"){
+  window.location.href="http://127.0.0.1:5500/devices.html";
+}
+if(btn=="Setup wifi"){
+  window.location.href="http://127.0.0.1:5500/new-wifi.html";
+}
+
+
+
+}
+        hamburgerMenu.addEventListener("click", () => {
+            navMenu.style.display = navMenu.style.display === "block" ? "none" : "block";
+        });
       // Function to play audio
       function playAudio() {
         const audioElement = document.getElementById("audioElement");
@@ -145,7 +270,7 @@
         humanModel.setAttribute("visible", true); // Show the model
         humanModel.setAttribute("animation-mixer", "timeScale: 1"); // Start the animation
         playAudio(); // Play the audio
-      }, 5000); // 10000 milliseconds = 10 seconds
+      }, 4000); // 10000 milliseconds = 10 seconds
 
       // Show AR buttons after 5 seconds
       setTimeout(() => {
