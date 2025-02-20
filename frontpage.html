@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Markerless AR with A-Frame and AR.js</title>
@@ -8,10 +8,10 @@
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.0/dist/aframe-extras.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <link rel="stylesheet" href="style.css">
+
     <style>
-        /* Green background plane for buttons */
-        #button-container {
+                /* Green background plane for buttons */
+                #button-container {
             position: absolute;
             bottom: 0;
             left: 0;
@@ -173,56 +173,54 @@
             }
         }
     </style>
-</head>
-<body style="margin: 0; overflow: hidden;">
+  </head>
+  <body style="margin: 0; overflow: hidden;">
     <!-- Hamburger Menu -->
-    <div id="hamburger-menu">
-        <i class="fas fa-bars"></i>
-    </div>
-
-    <!-- Navigation Menu -->
     <div id="nav-menu">
-        <a href="#" onclick="loadPage('test-markls-1.html')">Option 1</a>
-        <a href="#" onclick="loadPage('new-wifi.html')">Option 2</a>
-        <a href="#" onclick="loadPage('3.html')">Option 3</a>
-    </div>
+      <a href=''>Home</a>
+      <a href='new-wifi.html'>Setup wifi</a>
+      <a href='devices.html'>Devices</a>
+  </div>
+  <!-- Initial Description Text -->
+  <div id="initial-description">Point your camera at a flat surface to place the 3D model<div id="hamburger-menu">
+      <i class="fas fa-bars"></i>
+  </div>
+  </div>
+    <!-- A-Frame Scene with AR.js -->
+    <a-scene
+      embedded
+      arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;"
+      renderer="logarithmicDepthBuffer: true; colorManagement: true, exposure: 1.0; toneMapping: ACESFilmic;"
+      vr-mode-ui="enabled: false"
 
-    <!-- Content Area -->
-    <div id="content-area">
-        <!-- A-Frame Scene with AR.js -->
-        <a-scene
-            embedded
-            arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;"
-            renderer="logarithmicDepthBuffer: true; colorManagement: true"
-            vr-mode-ui="enabled: false"
-            style="height: calc(100vh - 60px);"
-        >
-            <!-- Add a 3D Human Model -->
-            <a-entity
-                id="human-model"
-                gltf-model="url(aaa22.glb)"
-                scale="0.025 0.025 0.025"
-                position="0 -1 -2"
-                animation-mixer="clip: *; timeScale: 0; loop: once"
-                visible="false"
-            ></a-entity>
+    >
+      <!-- Add a 3D Human Model -->
+      <a-entity
+        id="human-model"
+        gltf-model="url(aaa22.glb)"
+        scale="0.025 0.025 0.025"
+        position="0 -1 -2"
+        animation-mixer="clip: *; timeScale: 0; loop: once" <!-- Pause animation initially -->
+        visible="false" <!-- Initially hidden -->
+      ></a-entity>
 
-            <!-- AR Buttons -->
-            <a-entity id="serviceButtons" visible="false">
-                <!-- Buttons will be added here -->
-            </a-entity>
+      <!-- AR Buttons -->
+      <a-entity id="serviceButtons" visible="false">
+        <!-- Buttons will be added here -->
+      </a-entity>
 
-            <!-- Audio Element -->
-            <a-entity id="audioElement" sound="src: url(cl.mp3); autoplay: false;"></a-entity>
+      <!-- Audio Element -->
+      <a-entity id="audioElement" sound="src: url(cl.mp3); autoplay: false;"></a-entity>
 
-            <!-- Camera with cursor for interactions -->
-            <a-entity camera look-controls>
-                <a-cursor fuse="true" fuse-timeout="500" geometry="primitive: ring; radiusInner: 0; radiusOuter: 0"></a-cursor>
-            </a-entity>
-        </a-scene>
-    </div>
+      <!-- Camera with cursor for interactions -->
+      <a-entity camera look-controls>
+        <a-cursor fuse="true" fuse-timeout="500" geometry="primitive: ring; radiusInner: 0; radiusOuter: 0"></a-cursor>
+      </a-entity>
+    </a-scene>
 
-    <!-- Footer -->
+    
+
+    <!-- Green background plane with buttons -->
     <footer>
         <div class="input-area">
             <button class="mic-button"><i class="fas fa-microphone"></i></button>
@@ -232,8 +230,70 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script>
+      const hamburgerMenu = document.getElementById("hamburger-menu");
+        const navMenu = document.getElementById("nav-menu");
+//
+navMenu.addEventListener("click", function(e){
+  clicker(e);
+});2
+function clicker(e){
+  e.preventDefault();
+const btn=e.target.textContent;
+if(btn=="Home"){
+  window.location.href="http://127.0.0.1:5500/frontpage.html";
+}
+if(btn=="Devices"){
+  window.location.href="http://127.0.0.1:5500/devices.html";
+}
+if(btn=="Setup wifi"){
+  window.location.href="http://127.0.0.1:5500/new-wifi.html";
+}
 
-    
-</body>
+
+
+}
+        hamburgerMenu.addEventListener("click", () => {
+            navMenu.style.display = navMenu.style.display === "block" ? "none" : "block";
+        });
+      // Function to play audio
+      function playAudio() {
+        const audioElement = document.getElementById("audioElement");
+        audioElement.components.sound.playSound();
+      }
+
+      // Show the 3D model, start animation, and play audio after 10 seconds
+      setTimeout(() => {
+        const humanModel = document.getElementById("human-model");
+        const audioElement = document.getElementById("audioElement");
+
+        humanModel.setAttribute("visible", true); // Show the model
+        humanModel.setAttribute("animation-mixer", "timeScale: 1"); // Start the animation
+        playAudio(); // Play the audio
+      }, 4000); // 10000 milliseconds = 10 seconds
+
+      // Show AR buttons after 5 seconds
+      setTimeout(() => {
+        document.getElementById("serviceButtons").setAttribute("visible", true);
+      }, 5000); // 5000 milliseconds = 5 seconds
+
+      // Attach click event listeners to the AR buttons
+      document.addEventListener("DOMContentLoaded", function () {
+        // Redirect Service 1 button to 'new-wifi.html'
+        document.getElementById("service1").addEventListener("click", function () {
+          window.location.href = "new-wifi.html";
+        });
+
+        // Add functionality for Service 2 button
+        document.getElementById("service2").addEventListener("click", function () {
+          // Add your logic here
+        });
+
+        // Add functionality for Service 3 button
+        document.getElementById("service3").addEventListener("click", function () {
+          window.location.href = "test-markls-1.html";
+        });
+      });
+    </script>
+  </body>
 </html>

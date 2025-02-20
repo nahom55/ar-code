@@ -1,0 +1,83 @@
+.button-container {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    flex-wrap: nowrap; /* Prevent wrapping to the next line */
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 5px;
+    width: 90%; /* Ensure the container fits within the screen */
+    max-width: 600px; /* Limit maximum width */
+    overflow-x: auto; /* Enable horizontal scrolling for buttons */
+    white-space: nowrap; /* Prevent text wrapping */
+}
+.button-container button {
+    padding: 10px 10px;
+    font-size: 16px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    flex: 0 0 auto; /* Prevent buttons from shrinking */
+    margin: 1px;
+}
+.button-container button:hover {
+    background-color: rgb(0, 159, 0);
+}
+.model-buttons {
+    display: none; /* Hide model buttons initially */
+}
+
+/* Compare Devices Checkbox */
+.compare-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: white;
+    font-size: 16px;
+    flex: 0 0 auto; /* Prevent checkbox from shrinking */
+}
+.compare-checkbox input {
+    margin: 0;
+}
+
+/* Navigation buttons */
+.nav-button {
+    font-size: 24px;
+    background-color: rgba(0, 123, 255, 0.8);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto; /* Prevent navigation buttons from shrinking */
+}
+
+/* New Description Text */
+#initial-description {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: green;
+    padding: 10px;
+    border-radius: 5px;
+    width: 90%;
+    max-width: 400px;
+    box-sizing: border-box;
+    z-index: 1000;
+}

@@ -6,6 +6,7 @@
     <title>Wi-Fi Router Setup Guide</title>
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <style>
       /* CSS for step counter, description, and buttons */
       .step-counter {
@@ -19,6 +20,26 @@
         flex: 1; /* Allow the step counter to grow and take available space */
         margin: 0 10px; /* Add spacing between buttons and step counter */
       }
+
+
+      /* New Description Text */
+      #initial-description {
+            position: absolute;
+            top: 10px;
+            left: 45%;
+            font-size: smaller;
+            transform: translateX(-50%);
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: green;
+            padding: 0.8rem;
+            border-radius: 5px;
+            width: 110%;
+            /* max-width: 400px; */
+            box-sizing: border-box;
+            z-index: 1000;
+        }
 
       .step-description {
         position: fixed;
@@ -37,6 +58,12 @@
         max-width: 300px;
         box-sizing: border-box;
         display: none; /* Initially hidden */
+      }
+
+      .step-description a {
+        color: white;
+        text-decoration: underline;
+        cursor: pointer;
       }
 
       .nav-buttons {
@@ -132,9 +159,152 @@
           padding: 6px 12px;
         }
       }
+
+
+      
+        /* Footer */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            background-color: #242424;
+            z-index: 10000; /* Ensure footer is above A-Frame scene */
+            box-sizing: border-box;
+        }
+
+        .input-area {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px;
+            background-color: #333;
+            border-radius: 25px;
+        }
+
+        .input-area button {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #4CAF50; /* Green */
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .input-area button i {
+            color: #fff;
+        }
+
+        .input-area button.active { /* Added style */
+            background-color: red;
+        }
+
+        .input-area input[type="text"] {
+            flex: 1;
+            background-color: transparent;
+            border: none;
+            color: #fff;
+            padding: 10px;
+        }
+
+        .input-area input[type="text"]::placeholder {
+            color: #aaa;
+        }
+
+        /* Hamburger Menu */
+        #hamburger-menu {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10000;
+            cursor: pointer;
+            color: white;
+            font-size: 24px;
+        }
+
+        #nav-menu {
+            position: absolute;
+            top: 50px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 5px;
+            padding: 10px;
+            display: none;
+            z-index: 10000;
+        }
+
+        #nav-menu a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            font-family: Arial, sans-serif;
+        }
+
+        #nav-menu a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .ar-button {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            .input-area {
+                padding: 6px;
+            }
+
+            .input-area button {
+                width: 30px;
+                height: 30px;
+            }
+
+            .input-area input[type="text"] {
+                padding: 8px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .ar-button {
+                font-size: 10px;
+                padding: 4px 8px;
+            }
+
+            .input-area {
+                padding: 4px;
+            }
+
+            .input-area button {
+                width: 25px;
+                height: 25px;
+            }
+
+            .input-area input[type="text"] {
+                padding: 6px;
+            }
+        }
     </style>
   </head>
   <body>
+    <!-- Hamburger Menu -->
+    <div id="hamburger-menu">
+      <i class="fas fa-bars"></i>
+  </div>
+  <div id="initial-description">Please scan your router</div>
+
+  <!-- Hamburger Menu -->
+  <div id="nav-menu">
+    <a href='#'>Home</a>
+    <a href='#'>Setup wifi</a>
+    <a href='#'>Devices</a>
+</div>
     <!-- AR.js Scene -->
     <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;" vr-mode-ui="enabled: false">
       <!-- 3D Model of the Wi-Fi Router -->
@@ -279,6 +449,15 @@
       <button id="home-button" onclick="goToHome()">Home</button>
     </div>
 
+        <!-- Green background plane with buttons -->
+        <footer>
+          <div class="input-area">
+              <button class="mic-button"><i class="fas fa-microphone"></i></button>
+              <button class="video-button"><i class="fas fa-video"></i></button>
+              <input type="text" placeholder="Type something" id="textInput">
+              <button class="send-button"><i class="fas fa-paper-plane"></i></button>
+          </div>
+      </footer>
     <script>
       // Step Management
       let currentStep = 1;
@@ -294,6 +473,31 @@
       const wifiPasswordAnnotation = document.getElementById("wifi-password-annotation");
       const wifiIpAnnotation = document.getElementById("wifi-ip-annotation");
       const powerButtonAnnotation = document.getElementById("power-button-annotation");
+
+      const hamburgerMenu = document.getElementById("hamburger-menu");
+        const navMenu = document.getElementById("nav-menu");
+
+
+        navMenu.addEventListener("click", function(e){
+  clicker(e);
+});
+function clicker(e){
+  e.preventDefault();
+const btn=e.target.textContent;
+if(btn=="Home"){
+  window.location.href="http://127.0.0.1:5500/frontpage.html";
+}
+if(btn=="Devices"){
+  window.location.href="http://127.0.0.1:5500/devices.html";
+}
+if(btn=="Setup wifi"){
+  window.location.href="http://127.0.0.1:5500/new-wifi.html";
+}
+}
+
+        hamburgerMenu.addEventListener("click", () => {
+            navMenu.style.display = navMenu.style.display === "block" ? "none" : "block";
+        });
 
       // Function to update annotations and description based on the current step
       function updateAnnotations() {
@@ -336,7 +540,8 @@
             wifiPasswordAnnotation.setAttribute("visible", false);
             wifiIpAnnotation.setAttribute("visible", false);
             powerButtonAnnotation.setAttribute("visible", false);
-            stepDescription.textContent = "Finally to change password and access other settings you can browse the admin page using wifi's ip address";
+            stepDescription.innerHTML =
+              "Finally to change password and access other settings you can browse the admin page using wifi's ip address. <a onclick='goToHome()'>Click here </a> to go to the admin page";
             break;
         }
       }
@@ -426,7 +631,11 @@
 
       // Function to redirect to the home page
       function goToHome() {
-        window.location.href = "https://nahom55.github.io/ar-code/dong-cube3.html"; // Redirect to
+        window.location.href = "https://192.168.0.1/"; // Redirect to h.html
+      }
+
+      function goToAdmin() {
+        window.location.href = "https://192.168.0.1/"; // Redirect to h.html
       }
 
       // Initialize the first step
@@ -437,10 +646,10 @@
       setTimeout(() => {
         const routerModel = document.getElementById("router-model");
         const stepDescription = document.getElementById("step-description");
-
+        document.querySelector("#initial-description").style.display="none";
         routerModel.setAttribute("visible", true);
         stepDescription.style.display = "block";
-      }, 10000); // 10 seconds delay
+      }, 3000); // 10 seconds delay
     </script>
   </body>
 </html>
